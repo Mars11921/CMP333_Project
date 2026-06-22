@@ -1,0 +1,17 @@
+{
+  "initial_state": [1, 1],
+  "deliveries": [
+    {
+      "id": "delivery_1",
+      "pickup": [9, 3],
+      "dropoff": [10, 8],
+      "reward": 100
+    },
+    {
+      "id": "delivery_2",
+      "pickup": [10,2],
+      "dropoff": [7,3],
+      "reward": 100
+    }
+  ]
+}
