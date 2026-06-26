@@ -40,6 +40,13 @@ def plan_delivery_route(
         all_actions.append(Action.DELIVER)
         completed.append(delivery.delivery_id)
 
+        return DeliveryPlan(
+        actions=all_actions,
+        cost=total_cost,
+        nodes_expanded=total_nodes,
+        completed_delivery_ids=completed,
+        )
+        
 def uniform_cost_search(problem: SearchProblem) -> SearchResult: # Will Implement This First F(n) = G(n) => Evaluation Function
     """Return the lowest-cost path from start to goal using UCS."""
     start = problem.initial_state # Store State Node In Start
