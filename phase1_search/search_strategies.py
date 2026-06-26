@@ -63,7 +63,8 @@ def uniform_cost_search(problem: SearchProblem) -> SearchResult: # Will Implemen
     nodes_expanded = 0 # Variable Stores Number Of Nodes Expanded, Initially Zero
 
     while frontier:
-
+        cost, _, current = heapq.heappop(frontier)
+        
         if current in expanded:
             continue
         expanded.add(current)
