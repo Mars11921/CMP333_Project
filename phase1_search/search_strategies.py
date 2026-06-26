@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from phase1_search.search_problem import DeliveryPlan, SearchAlgorithm, SearchProblem, SearchResult
+import heapq
+
+from phase1_search.search_problem import DeliveryPlan, SearchAlgorithm, SearchProblem, SearchResult, actions_from_path
 from simulator.campus_map import CampusMap
 from simulator.models import Delivery, Position
 
@@ -18,7 +20,8 @@ def uniform_cost_search(problem: SearchProblem) -> SearchResult: # Will Implemen
     start = problem.initial_state # Store State Node In Start
 
     frontier = [] # Intially The Frontier Is Empty
-
+    counter = 0
+    
     heapq.heappush(frontier, (0, 0, start)) # We Push Start Node Along With Its Cost i.e. (0) & Counter In Case Of Tie Between Nodes
     counter += 1 # Increment Counter After Pushing Initial Node
 
