@@ -13,10 +13,52 @@ def plan_delivery_route(
     """Plan a route that picks up and delivers all given deliveries in order."""
     raise NotImplementedError("Phase 1 TODO: implement delivery route planning.")
 
-def uniform_cost_search(problem: SearchProblem) -> SearchResult:
+def uniform_cost_search(problem: SearchProblem) -> SearchResult: # Will Implement This First F(n) = G(n) => Evaluation Function
     """Return the lowest-cost path from start to goal using UCS."""
-    raise NotImplementedError("Phase 1 TODO: implement uniform cost search.")
+    start = problem.initial_state # Store State Node In Start
 
+    frontier = [] # Intially The Frontier Is Empty
+
+    heapq.heappush(frontier, (0, 0, start)) # We Push Start Node Along With Its Cost i.e. (0) & Counter In Case Of Tie Between Nodes
+    counter += 1 # Increment Counter After Pushing Initial Node
+
+    came_from = {start: None} # Dictionary That Stores Node & Its Parent
+    cost_so_far = {start: 0} # Dictionary That Stores Cost So Far From Current Node
+    expanded = set() # A Set Of Explored Nodes, Initially Empty
+    nodes_expanded = 0 # Variable Stores Number Of Nodes Expanded, Initially Zero
+
+    while frontier:
+
+        if current in expanded:
+            continue
+        expanded.add(current)
+        nodes_expanded += 1
+
+        if problem.is_goal(current):
+            break
+
+        for action in problem.actions(current):
+            next_pos = problem.result(current, action)
+            new_cost = cost + problem.cost(current, action, next_pos)
+
+            if next_pos not in cost_so_far or new_cost < cost_so_far[next_pos]:
+                cost_so_far[next_pos] = new_cost
+                came_from[next_pos] = current
+                heapq.heappush(frontier, (new_cost, counter, next_pos))
+                counter += 1
+    path = []
+    node = problem.goal
+    while node is not None:
+        path.append(node)
+        node = came_from[node]
+    path.reverse()
+
+    return SearchResult(
+        path=path,
+        actions=actions_from_path(path),
+        cost=cost_so_far[problem.goal],
+        nodes_expanded=nodes_expanded,
+    )
 
 def greedy_best_first_search(problem: SearchProblem) -> SearchResult:
     """Return a path from start to goal using greedy best-first search."""
