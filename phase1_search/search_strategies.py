@@ -4,7 +4,7 @@ import heapq
 
 from phase1_search.search_problem import DeliveryPlan, SearchAlgorithm, SearchProblem, SearchResult, actions_from_path
 from simulator.campus_map import CampusMap
-from simulator.models import Delivery, Position
+from simulator.models import Action, Delivery, Position
 
 def plan_delivery_route(
     campus_map: CampusMap,
@@ -13,7 +13,32 @@ def plan_delivery_route(
     search_algorithm: SearchAlgorithm,
 ) -> DeliveryPlan:
     """Plan a route that picks up and delivers all given deliveries in order."""
-    raise NotImplementedError("Phase 1 TODO: implement delivery route planning.")
+    for delivery in deliveries:
+        # step 1: walk to the pickup
+        problem = SearchProblem(campus_map, current, delivery.pickup)
+        result = search_algorithm(problem)
+        all_actions += result.actions
+        total_cost += result.cost
+        total_nodes += result.nodes_expanded
+        current = delivery.pickup
+
+        # step 2: PICKUP
+        carrying = pickup(current, delivery, carrying)
+        all_actions.append(Action.PICKUP)
+
+        # step 3: walk to the dropoff  (step 1 again, target = dropoff)
+        problem = SearchProblem(campus_map, current, delivery.dropoff)
+        result = search_algorithm(problem)
+        all_actions += result.actions
+        total_cost += result.cost
+        total_nodes += result.nodes_expanded
+        current = delivery.dropoff
+
+        # step 4: DELIVER  (step 2 again, but putting down)
+        deliver(current, delivery, carrying)
+        carrying = None
+        all_actions.append(Action.DELIVER)
+        completed.append(delivery.delivery_id)
 
 def uniform_cost_search(problem: SearchProblem) -> SearchResult: # Will Implement This First F(n) = G(n) => Evaluation Function
     """Return the lowest-cost path from start to goal using UCS."""
