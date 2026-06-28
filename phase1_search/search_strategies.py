@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import heapq
 
-from phase1_search.search_problem import DeliveryPlan, SearchAlgorithm, SearchProblem, SearchResult, actions_from_path
+from phase1_search.search_problem import DeliveryPlan, SearchAlgorithm, SearchProblem, SearchResult, actions_from_path, manhattan_distance
 from simulator.campus_map import CampusMap
 from simulator.models import Action, Delivery, Position
 
