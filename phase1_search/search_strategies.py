@@ -106,12 +106,109 @@ def uniform_cost_search(problem: SearchProblem) -> SearchResult: # Will Implemen
 
 def greedy_best_first_search(problem: SearchProblem) -> SearchResult:
     """Return a path from start to goal using greedy best-first search."""
-    raise NotImplementedError("Phase 1 TODO: implement greedy best-first search.")
+    start = problem.initial_state
+    frontier = []
+    counter = 0
+
+    heapq.heappush(frontier, (manhattan_distance(start, problem.goal), counter, start))
+    counter += 1
+
+    came_from = {start: None}
+    cost_so_far = {start: 0}
+    expanded = set()
+    nodes_expanded = 0
+
+    while frontier:
+        _, _, current = heapq.heappop(frontier)
+
+        if current in expanded:
+            continue
+
+        expanded.add(current)
+        nodes_expanded += 1
+
+        if problem.is_goal(current):
+            break
+
+        for action in problem.actions(current):
+            next_pos = problem.result(current, action)
+
+            if next_pos not in came_from:
+                came_from[next_pos] = current
+                cost_so_far[next_pos] = cost_so_far[current] + problem.cost(current, action, next_pos)
+                priority = manhattan_distance(next_pos, problem.goal)
+                heapq.heappush(frontier, (priority, counter, next_pos))
+                counter += 1
+
+    path = []
+    node = problem.goal
+
+    while node is not None:
+        path.append(node)
+        node = came_from[node]
+
+    path.reverse()
+
+    return SearchResult(
+        path=path,
+        actions=actions_from_path(path),
+        cost=cost_so_far[problem.goal],
+        nodes_expanded=nodes_expanded,
+    )
 
 
 def a_star_search(problem: SearchProblem) -> SearchResult:
     """Return the lowest-cost path from start to goal using A* search."""
-    raise NotImplementedError("Phase 1 TODO: implement A* search.")
+    start = problem.initial_state
+    frontier = []
+    counter = 0
+
+    heapq.heappush(frontier, (manhattan_distance(start, problem.goal), counter, start))
+    counter += 1
+
+    came_from = {start: None}
+    cost_so_far = {start: 0}
+    expanded = set()
+    nodes_expanded = 0
+
+    while frontier:
+        _, _, current = heapq.heappop(frontier)
+
+        if current in expanded:
+            continue
+
+        expanded.add(current)
+        nodes_expanded += 1
+
+        if problem.is_goal(current):
+            break
+
+        for action in problem.actions(current):
+            next_pos = problem.result(current, action)
+            new_cost = cost_so_far[current] + problem.cost(current, action, next_pos)
+
+            if next_pos not in cost_so_far or new_cost < cost_so_far[next_pos]:
+                cost_so_far[next_pos] = new_cost
+                came_from[next_pos] = current
+                priority = new_cost + manhattan_distance(next_pos, problem.goal)
+                heapq.heappush(frontier, (priority, counter, next_pos))
+                counter += 1
+
+    path = []
+    node = problem.goal
+
+    while node is not None:
+        path.append(node)
+        node = came_from[node]
+
+    path.reverse()
+
+    return SearchResult(
+        path=path,
+        actions=actions_from_path(path),
+        cost=cost_so_far[problem.goal],
+        nodes_expanded=nodes_expanded,
+    )
 
 
 def pickup(position: Position, delivery: Delivery, carrying_delivery_id: str | None) -> str:
